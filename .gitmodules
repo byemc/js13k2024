@@ -1,0 +1,3 @@
+[submodule "hampsterengine"]
+	path = hampsterengine
+	url = https://github.com/byemc/hampsterengine.git
