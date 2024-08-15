@@ -1,9 +1,9 @@
 
 import Canvas from "../../hampsterengine/src/canvas.js";
 import Engine from "../../hampsterengine/src/engine.js";
-import {Room} from "../../hampsterengine/src/things";
+import {Room} from "../../hampsterengine/src/things.js";
 
-import {Logo, MainMenuButton} from "./objects";
+import {Logo, MainMenuButton} from "./objects.js";
 
 const canvas = new Canvas('canvas');
 const engine = new Engine(canvas);
@@ -11,6 +11,7 @@ const assets = engine.assetStore;
 
 canvas.width = 640;
 canvas.height = 480;
+canvas.pixelRatio = 2;
 canvas.ctx.setTransform(canvas.pixelRatio, 0, 0, canvas.pixelRatio, 0, 0);
 canvas.ctx.imageSmoothingEnabled = false;
 
@@ -48,4 +49,5 @@ function main() {
 }
 
 engine.room = engine.getRoomIndex('mainMenu');
+if (document.location.hash) engine.room = engine.getRoomIndex(document.location.hash);
 main();

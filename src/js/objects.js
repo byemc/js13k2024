@@ -1,4 +1,13 @@
 import {Thing} from "../../hampsterengine/src/things";
+import ButtonBKG from "../img/button.webp";
+
+export class Button extends Thing {
+    constructor(props) {
+        super(props);
+        this.sprite = ButtonBKG;
+    }
+
+}
 
 export class MainMenuButton extends Thing {
     constructor(label, action=function(){}) {
