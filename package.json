@@ -1,0 +1,26 @@
+{
+  "scripts": {
+    "clear": "rm -rf build && mkdir build",
+    "serve": "npm-run-all -s clear -p dev:*",
+    "dev:js": "esbuild src/js/main.js --bundle --watch --sourcemap --format=iife --loader:.webp=dataurl --outfile=build/main.js",
+    "dev:html": "browser-sync build src --watch --https",
+    "build": "run-s clear build:*",
+    "build:js": "esbuild src/js/main.js --bundle --minify --format=iife --loader:.webp=dataurl | roadroller --type js - -O 2 -o build/main.js",
+    "build:html": "html-inline src/index.html -b build | html-minifier -c configs/html-minifier.json -o build/index.html",
+    "build:zip": "zip -FS -qjX9 build/game.zip build/index.html && advzip -z -4 build/game.zip",
+    "build:zipSize": "node configs/size.js"
+  },
+  "devDependencies": {
+    "advzip-bin": "^2.0.0",
+    "browser-sync": "^3.0.2",
+    "esbuild": "0.23.0",
+    "html-inline": "1.2.0",
+    "html-minifier": "^4.0.0",
+    "npm-run-all": "^4.1.5",
+    "roadroller": "^2.1.0",
+    "terser": "^5.31.6"
+  },
+  "dependencies": {
+    "jsfxr": "^1.2.2"
+  }
+}
