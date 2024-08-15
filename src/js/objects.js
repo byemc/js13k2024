@@ -1,15 +1,60 @@
 import {Thing} from "../../hampsterengine/src/things";
-import ButtonBKG from "../img/button.webp";
+import ButtonBorder from "../img/button.webp";
+
+// Private
+
+function drawButton(x, y, width, height, sprite, clicked, depressedColour) {
+    width = Math.ceil(width)
+    height = Math.ceil(height)
+    // base co-ords
+    const basey = y + (clicked ? 2 : 0);
+
+    if (!clicked) {
+        canvas.setFillColor(depressedColour);
+        canvas.fillRect(x, y + height - 2, width, 2);
+        canvas.fillRect(x + 1, y + height - 1, width - 2, 2);
+    }
+
+    canvas.setFillColor('white');
+    canvas.fillRect(x + 1, basey + 1, width - 2, height - 2);
+
+    // Draw the border
+    canvas.sliceImage(sprite, x, basey, 3, height, 0, 0, 3, 14);
+    canvas.sliceImage(sprite, x+3, basey, width - 5, height, 3, 0, 11, 14);
+    canvas.sliceImage(sprite, x+width-2, basey, 3, height, 14, 0, 3, 14);
+}
+
+// Public
 
 export class Button extends Thing {
     constructor(props) {
         super(props);
-        this.sprite = ButtonBKG;
+        this.sprite = ButtonBorder;
+
+        this.clicked = false;
+        this.icon = null; //Image data
+
+        this.height = 14;
+        this.width = 16;
+
+        this.depressedColour = '#3e3546';
     }
 
+    draw() {
+        drawButton(this.x, this.y, this.width, this.height, this.sprite, this.clicked, this.depressedColour);
+    }
+
+    mousedown() {
+        super.mousedown();
+        this.clicked = true;
+    }
+
+    mouseupOffThing() {
+        super.mouseupOffThing();
+    }
 }
 
-export class MainMenuButton extends Thing {
+export class MainMenuButton extends Button {
     constructor(label, action=function(){}) {
         super();
 
@@ -19,8 +64,7 @@ export class MainMenuButton extends Thing {
         this.fontSize = 10;
         this.font = 'serif';
 
-        this.bgColor = '#5f5f5f';
-        this.color = '#ffffff';
+        this.color = '#000000';
     }
 
     draw() {
@@ -35,7 +79,8 @@ export class MainMenuButton extends Thing {
         const rectHeight = this.fontSize + padding;
         this.height = rectHeight;
         this.width = text.width + padding;
-        canvas.fillRect(this.x, this.y, this.width, rectHeight);
+
+        drawButton(this.x, this.y, this.width, this.height, this.sprite, this.clicked, this.depressedColour);
 
         canvas.setFillColor(this.color);
         canvas.drawText(
@@ -44,9 +89,8 @@ export class MainMenuButton extends Thing {
             }
         );
 
-        canvas.drawText("", 10, canvas.height-10, {
-            textBaseline: "alphabetic"
-        })
+        // DO NOT REMOVE THIS. THE TEXT ON THE MAIN MENU BREAKS OTHERWISE.
+        canvas.drawText("", 0, 0, {})
     }
 
     click() {
