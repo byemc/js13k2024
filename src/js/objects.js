@@ -37,7 +37,7 @@ export class Button extends Thing {
         this.height = 14;
         this.width = 16;
 
-        this.depressedColour = '#3e3546';
+        this.depressedColour = '#645372';
     }
 
     draw() {
@@ -45,12 +45,14 @@ export class Button extends Thing {
     }
 
     mousedown() {
-        super.mousedown();
         this.clicked = true;
     }
 
+    mouseup() {
+    }
+
     mouseupOffThing() {
-        super.mouseupOffThing();
+        this.clicked = false;
     }
 }
 
@@ -92,10 +94,6 @@ export class MainMenuButton extends Button {
         // DO NOT REMOVE THIS. THE TEXT ON THE MAIN MENU BREAKS OTHERWISE.
         canvas.drawText("", 0, 0, {})
     }
-
-    click() {
-        this.action();
-    }
 }
 
 export class Logo extends Thing {
@@ -107,7 +105,7 @@ export class Logo extends Thing {
     }
 
     draw() {
-        canvas.setFillColor('#efefef');
+        canvas.setFillColor('#0f0f0f');
         let font = 'Times New Roman';
         let align = (function () {
             switch (this.align) {

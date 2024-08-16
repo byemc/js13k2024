@@ -5,12 +5,12 @@ import {Room} from "../../hampsterengine/src/things.js";
 
 import {Logo, MainMenuButton} from "./objects.js";
 import SoundBox from "./sb-player-small";
-import {mus_DEMOSONG} from "../music/DEMOSONGDONOTCOMMIT";
+// import {mus_DEMOSONG} from "./songs/DEMOSONGDONOTCOMMIT";
 
 // Rooms
 import {rm_DEBUG_button} from "./rooms/debug_button";
 import {rm_DEBUG_mouse} from "./rooms/debug_mouse";
-import assetStore from "../../hampsterengine/src/assetStore";
+import {rm_DEBUG_music} from "./rooms/debug_music";
 
 // Music
 
@@ -18,7 +18,7 @@ const canvas = new Canvas('canvas');
 const engine = new Engine(canvas);
 const assets = engine.assetStore;
 
-assets.addSoundBoxAudio('mus_DEMO', mus_DEMOSONG, new SoundBox());
+// assets.addSoundBoxAudio('mus_DEMO', mus_DEMOSONG, new SoundBox());
 
 canvas.width = 640;
 canvas.height = 480;
@@ -33,7 +33,7 @@ let lastClickPos = {
 window.lastClickPos = lastClickPos;
 
 const rm_MainMenu = new Room();
-rm_MainMenu.bgColor = 'black';
+rm_MainMenu.bgColor = '#f0f0f0';
 
 const logo = new Logo();
 logo.x = 30;
@@ -47,8 +47,8 @@ newGameButton.y = 70;
 rm_MainMenu.things.push(newGameButton);
 
 rm_MainMenu.drawGui = _ => {
-    canvas.setFillColor('white');
-    canvas.drawText("(c) bye 2024", 30, canvas.height-45,{
+    canvas.setFillColor('#0f0f0f');
+    canvas.drawText("(c) bye 2024", 30, canvas.height-25,{
         font: '8px serif'
     });
 }
@@ -57,6 +57,7 @@ engine.registerRoom(rm_MainMenu, 'mainMenu');
 
 engine.registerRoom(rm_DEBUG_button, 'debug_button');
 engine.registerRoom(rm_DEBUG_mouse, 'debug_mouse');
+engine.registerRoom(rm_DEBUG_music, 'debug_music');
 
 function main() {
     requestAnimationFrame(main);
@@ -71,27 +72,20 @@ function main() {
 
 console.debug(engine.rooms);
 
-canvas.canvas.addEventListener('click', ev => {
-    lastClickPos.x = engine.mouse.x;
-    lastClickPos.y = engine.mouse.y;
-    console.log(lastClickPos);
-})
-
 if (document.location.hash) {
     console.log('Requesting room', document.location.hash.substring(1));
+    engine.loadDelay = 0;
     engine.room = engine.getRoomIndex(document.location.hash.substring(1));
 } else {
     engine.room = engine.getRoomIndex('mainMenu');
 }
 
 // Ensure assets are loaded.
-
 function load() {
     if (engine.loading) {
         engine.loadLoop();
-        setTimeout(main, 1000/60);
+        setTimeout(load, 1000/60);
     } else {
-        engine.room = engine.getRoomIndex('mainMenu');
         main();
     }
 }
