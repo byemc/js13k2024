@@ -4,14 +4,21 @@ import Engine from "../../hampsterengine/src/engine.js";
 import {Room} from "../../hampsterengine/src/things.js";
 
 import {Logo, MainMenuButton} from "./objects.js";
+import SoundBox from "./sb-player-small";
+import {mus_DEMOSONG} from "../music/DEMOSONGDONOTCOMMIT";
 
 // Rooms
 import {rm_DEBUG_button} from "./rooms/debug_button";
 import {rm_DEBUG_mouse} from "./rooms/debug_mouse";
+import assetStore from "../../hampsterengine/src/assetStore";
+
+// Music
 
 const canvas = new Canvas('canvas');
 const engine = new Engine(canvas);
 const assets = engine.assetStore;
+
+assets.addSoundBoxAudio('mus_DEMO', mus_DEMOSONG, new SoundBox());
 
 canvas.width = 640;
 canvas.height = 480;
@@ -51,45 +58,6 @@ engine.registerRoom(rm_MainMenu, 'mainMenu');
 engine.registerRoom(rm_DEBUG_button, 'debug_button');
 engine.registerRoom(rm_DEBUG_mouse, 'debug_mouse');
 
-// const rm_DEBUG_music = new Room();
-// rm_DEBUG_music.audio = document.createElement("audio");
-// rm_DEBUG_music.start = _=> {
-//     canvas.pixelRatio =1;
-//     canvas.ctx.setTransform(1, 0, 0, 1, 0, 0);
-//
-//     const player = new Soundbox();
-//     const audio = rm_DEBUG_music.audio;
-//     player.init(song);
-//
-//     let done = false;
-//     setInterval(_=>{
-//         if (done) return;
-//
-//         done = player.generate() >= 1;
-//
-//         if (done) {
-//             const wave = player.createWave();
-//             audio.src = URL.createObjectURL(new Blob([wave], {type: "audio/wav"}));
-//             audio.play();
-//         }
-//     })
-// }
-//
-// rm_DEBUG_music.drawGui = _ => {
-//     const audio = rm_DEBUG_music.audio;
-//
-//     // get the time in seconds
-//     const date = new Date(0);
-//     date.setSeconds(audio.currentTime);
-//     const timeString = date.toISOString().substring(11, 19);
-//
-//     canvas.setFillColor('black');
-//     canvas.drawText(audio.paused ? 'Paused' : 'Playing', 10, canvas.height - 10, {});
-//     canvas.drawText(`${timeString}`, 10, canvas.height - 30, {});
-// }
-//
-// engine.registerRoom(rm_DEBUG_music, 'debug_music');
-
 function main() {
     requestAnimationFrame(main);
     canvas.fill(engine.room.bgColor ?? 'white');
@@ -115,4 +83,17 @@ if (document.location.hash) {
 } else {
     engine.room = engine.getRoomIndex('mainMenu');
 }
-main();
+
+// Ensure assets are loaded.
+
+function load() {
+    if (engine.loading) {
+        engine.loadLoop();
+        setTimeout(main, 1000/60);
+    } else {
+        engine.room = engine.getRoomIndex('mainMenu');
+        main();
+    }
+}
+
+load();
