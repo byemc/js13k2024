@@ -1,16 +1,17 @@
 
 import Canvas from "../../hampsterengine/src/canvas.js";
 import Engine from "../../hampsterengine/src/engine.js";
-import {Room} from "../../hampsterengine/src/things.js";
 
-import {Logo, MainMenuButton} from "./objects.js";
 import SoundBox from "./sb-player-small";
 // import {mus_DEMOSONG} from "./songs/DEMOSONGDONOTCOMMIT";
 
 // Rooms
+import {rm_mainMenu} from "./rooms/mainMenu";
+import {rm_game} from "./rooms/game";
 import {rm_DEBUG_button} from "./rooms/debug_button";
 import {rm_DEBUG_mouse} from "./rooms/debug_mouse";
 import {rm_DEBUG_music} from "./rooms/debug_music";
+import {rm_DEBUG_INCURSION} from "./rooms/debug_incursion";
 
 // Music
 
@@ -32,36 +33,19 @@ let lastClickPos = {
 
 window.lastClickPos = lastClickPos;
 
-const rm_MainMenu = new Room();
-rm_MainMenu.bgColor = '#f0f0f0';
+engine.registerRoom(rm_mainMenu, 'mainMenu');
+engine.registerRoom(rm_game, 'game');
 
-const logo = new Logo();
-logo.x = 30;
-logo.y = 45;
-logo.align = 2
-rm_MainMenu.things.push(logo);
-
-const newGameButton = new MainMenuButton('New Game');
-newGameButton.x = 30;
-newGameButton.y = 70;
-rm_MainMenu.things.push(newGameButton);
-
-rm_MainMenu.drawGui = _ => {
-    canvas.setFillColor('#0f0f0f');
-    canvas.drawText("(c) bye 2024", 30, canvas.height-25,{
-        font: '8px serif'
-    });
-}
-
-engine.registerRoom(rm_MainMenu, 'mainMenu');
-
+//Debug rooms. Comment out to not include in build (esbuild will not import them if they arent used)
 engine.registerRoom(rm_DEBUG_button, 'debug_button');
 engine.registerRoom(rm_DEBUG_mouse, 'debug_mouse');
 engine.registerRoom(rm_DEBUG_music, 'debug_music');
+engine.registerRoom(rm_DEBUG_INCURSION, 'debug_incursion')
 
 function main() {
     requestAnimationFrame(main);
-    canvas.fill(engine.room.bgColor ?? 'white');
+    engine.frames++;
+    canvas.fill(engine.room.bgColor ?? 'black');
 
     engine.step();
     engine.draw();

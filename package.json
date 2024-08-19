@@ -5,7 +5,7 @@
     "dev:js": "esbuild src/js/main.js --bundle --watch --sourcemap --format=iife --loader:.webp=dataurl --outfile=build/main.js",
     "dev:html": "browser-sync build src --watch --https",
     "build": "run-s clear build:*",
-    "build:js": "esbuild src/js/main.js --bundle --minify --format=iife --loader:.webp=dataurl | roadroller --type js - -O 2 -o build/main.js",
+    "build:js": "esbuild src/js/main.js --bundle --minify --format=iife --loader:.webp=dataurl --outfile=build/main.js",
     "build:html": "html-inline src/index.html -b build | html-minifier -c configs/html-minifier.json -o build/index.html",
     "build:zip": "zip -FS -qjX9 build/game.zip build/index.html && advzip -z -4 build/game.zip",
     "build:zipSize": "node configs/size.js"

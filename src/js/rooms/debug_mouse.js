@@ -13,6 +13,8 @@ rm_DEBUG_mouse.drawGui = _=> {
     canvas.drawLine(0, lastClick.y, canvas.width, lastClick.y);
     canvas.drawText(`LAST(${Math.round(lastClick.x)},${Math.round(lastClick.y)})`, lastClick.x+2, lastClick.y-2, {})
 
+    const cur = engine.mouse;
+
     if (engine.mouseDown) {
         // Draw the mousedown position
         const moused = engine.mouseDownPos;
@@ -22,10 +24,11 @@ rm_DEBUG_mouse.drawGui = _=> {
         canvas.drawLine(0, moused.y, canvas.width, moused.y);
         canvas.drawText(`DOW(${Math.round(moused.x)},${Math.round(moused.y)})`, moused.x+2, moused.y-2, {})
 
+        //Draw a line to the current position
+        canvas.drawLine(moused.x, moused.y, cur.x, cur.y)
     }
 
     // Draw the current mouse position onto the screen.
-    const cur = engine.mouse;
     canvas.setFillColor('black');
     canvas.setStrokeColor('black');
     canvas.drawLine(cur.x, 0, cur.x, canvas.height);

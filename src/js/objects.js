@@ -6,8 +6,6 @@ import ButtonBorder from "../img/button.webp";
 function drawButton(x, y, width, height, sprite, clicked, depressedColour) {
     width = Math.ceil(width)
     height = Math.ceil(height)
-    // base co-ords
-    const basey = y + (clicked ? 2 : 0);
 
     if (!clicked) {
         canvas.setFillColor(depressedColour);
@@ -16,12 +14,12 @@ function drawButton(x, y, width, height, sprite, clicked, depressedColour) {
     }
 
     canvas.setFillColor('white');
-    canvas.fillRect(x + 1, basey + 1, width - 2, height - 2);
+    canvas.fillRect(x + 1, y + 1, width - 2, height - 2);
 
     // Draw the border
-    canvas.sliceImage(sprite, x, basey, 3, height, 0, 0, 3, 14);
-    canvas.sliceImage(sprite, x+3, basey, width - 5, height, 3, 0, 11, 14);
-    canvas.sliceImage(sprite, x+width-2, basey, 3, height, 14, 0, 3, 14);
+    canvas.sliceImage(sprite, x, y, 3, height, 0, 0, 3, 14);
+    canvas.sliceImage(sprite, x+3, y, width - 5, height, 3, 0, 11, 14);
+    canvas.sliceImage(sprite, x+width-2, y, 3, height, 14, 0, 3, 14);
 }
 
 // Public
@@ -41,7 +39,8 @@ export class Button extends Thing {
     }
 
     draw() {
-        drawButton(this.x, this.y, this.width, this.height, this.sprite, this.clicked, this.depressedColour);
+        const basey = this.y + (this.clicked ? 2 : 0);
+        drawButton(this.x, basey, this.width, this.height, this.sprite, this.clicked, this.depressedColour);
     }
 
     mousedown() {
@@ -63,7 +62,7 @@ export class MainMenuButton extends Button {
         this.label = label;
         this.action = action;
 
-        this.fontSize = 10;
+        this.fontSize = 8;
         this.font = 'serif';
 
         this.color = '#000000';
@@ -78,21 +77,25 @@ export class MainMenuButton extends Button {
         const padding = this.fontSize/2;
         canvas.setFillColor(this.bgColor);
 
-        const rectHeight = this.fontSize + padding;
-        this.height = rectHeight;
         this.width = text.width + padding;
 
-        drawButton(this.x, this.y, this.width, this.height, this.sprite, this.clicked, this.depressedColour);
+        const basey = this.y + (this.clicked ? 2 : 0);
+        drawButton(this.x, basey, this.width, this.height, this.sprite, this.clicked, this.depressedColour);
 
         canvas.setFillColor(this.color);
         canvas.drawText(
-            this.label, this.x + (text.width + padding)/2, this.y + rectHeight/2, {
+            this.label, this.x + this.width/2, basey + this.height/2, {
                 font: font, textBaseline: "middle", textAlign: "center"
             }
         );
 
         // DO NOT REMOVE THIS. THE TEXT ON THE MAIN MENU BREAKS OTHERWISE.
         canvas.drawText("", 0, 0, {})
+    }
+
+    mouseup() {
+        super.mouseup();
+        this.action();
     }
 }
 
