@@ -1,4 +1,4 @@
-import {Thing} from "../../hampsterengine/src/things";
+import {Entity} from "../../hampsterengine/src/things";
 import ButtonBorder from "../img/button.webp";
 
 // Private
@@ -24,7 +24,7 @@ function drawButton(x, y, width, height, sprite, clicked, depressedColour) {
 
 // Public
 
-export class Button extends Thing {
+export class Button extends Entity {
     constructor(props) {
         super(props);
         this.sprite = ButtonBorder;
@@ -99,7 +99,7 @@ export class MainMenuButton extends Button {
     }
 }
 
-export class Logo extends Thing {
+export class Logo extends Entity {
     constructor(props) {
         super(props);
         this.spriteImage = null;
@@ -117,16 +117,35 @@ export class Logo extends Thing {
                 case 3: return  'right';
             }
         })
-        canvas.drawText('Committee of', this.x, this.y, {
+        canvas.drawText('Untitled', this.x, this.y, {
             textAlign: align,
             textBaseline: 'bottom',
             font: `12px ${font}`
         })
-        canvas.drawText('THIRTEEN', this.x, this.y, {
-            textAlign: align,
-            textBaseline: 'top',
-            font: `24px ${font}`
-        });
     }
 
+}
+
+// ENTITIES
+
+export class Player extends Entity {
+    constructor() {
+        super();
+        this.height=16;
+        this.width=10;
+        this.velocity = {
+            x:0, y:0
+        };
+    }
+
+    draw() {
+        canvas.setFillColor('red');
+        canvas.fillRect(this.x,this.y,this.width,this.height);
+    }
+
+    physicsTick() {
+        // Physics update 60 times a second
+        this.y += this.velocity.y/60;
+        this.x += this.velocity.x/60;
+    }
 }

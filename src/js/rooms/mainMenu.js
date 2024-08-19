@@ -8,14 +8,14 @@ const logo = new Logo();
 logo.x = 30;
 logo.y = 45;
 logo.align = 2
-rm_mainMenu.things.push(logo);
+rm_mainMenu.entities.push(logo);
 
 const newGameButton = new MainMenuButton('New Game', _=>{
     engine.room = engine.getRoomIndex('game');
 });
 newGameButton.x = 30;
 newGameButton.y = 70;
-rm_mainMenu.things.push(newGameButton);
+rm_mainMenu.entities.push(newGameButton);
 
 rm_mainMenu.drawGui = _ => {
     canvas.setFillColor('#0f0f0f');

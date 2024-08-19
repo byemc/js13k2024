@@ -21,6 +21,7 @@
     "terser": "^5.31.6"
   },
   "dependencies": {
-    "jsfxr": "^1.2.2"
+    "jsfxr": "^1.2.2",
+    "stats.js": "^0.17.0"
   }
 }
