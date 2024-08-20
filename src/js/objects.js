@@ -126,6 +126,53 @@ export class Logo extends Entity {
 
 }
 
+export class FontRenderer {
+    constructor(font) {
+        this.font = font;
+        this.h = 8;
+        this.w = 6;
+    }
+
+    draw(text, x, y) {
+        text = text.toUpperCase();
+        let split
+        try{
+            split = text.split("");
+        } catch (TypeError) {
+            return;
+        }
+        for (let i = 0; i < split.length; i++) {
+            const char = split[i];
+            const code = char.charCodeAt();
+            let slice;
+            if (code < 90 && code > 64) slice = code - 65; // Starts at 0 (LETTER)
+            else if (code < 58 && code > 48) slice = 25 + (code - 59) // Starts at 25
+            else if (code === 91) slice = 35;
+            else if (code === 93) slice = 36;
+            else slice = 37;
+
+            if (slice < 0) {
+                canvas.setFillColor('red');
+                // debugger
+            }
+            else canvas.setFillColor('black');
+            // canvas.drawText(`${Math.round(slice)}`, x+(i*(this.w+1)), y, {})
+            canvas.sliceImage(
+                this.font,
+                x+(i*(this.w+1)), y,
+                this.w, this.h,
+                this.w * (slice % 7), this.h * Math.round(slice / 7), this.w, this.h);
+        }
+    }
+
+    drawLines(text, x, y) {
+        const lines = text.split(/\n/);
+        for (let i = 0; i < lines.length; i++) {
+            this.draw(lines[i], x, y+(i*(this.h+1)));
+        }
+    }
+}
+
 // ENTITIES
 
 export class Player extends Entity {
