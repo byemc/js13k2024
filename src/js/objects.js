@@ -1,4 +1,4 @@
-import {Entity, PhysicsEntity} from "../../hampsterengine/src/things";
+import {Entity} from "../../hampsterengine/src/things";
 import ButtonBorder from "../img/button.webp";
 import {rm_game} from "./rooms/game";
 
