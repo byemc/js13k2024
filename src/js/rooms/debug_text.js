@@ -7,8 +7,8 @@ const sample_text = `haiiiiiii this is the text test room
 if you're here, welcome!
 why are you looking at the debug rooms??? they're boring!!
 im not hiding any cut content here. i dont have time for that
-
-here is the same message with a pixel art font:`
+here is the same message with a pixel art font:
+ze fucking font isnt working`
 
 rm_DEBUG_text.drawGui = _=>{
     canvas.setFillColor('black');

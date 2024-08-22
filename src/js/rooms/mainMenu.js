@@ -13,7 +13,7 @@ rm_mainMenu.entities.push(logo);
 rm_mainMenu.drawGui = _ => {
     canvas.setFillColor('#0f0f0f');
 
-    canvas.drawText("Press [ENTER] to start.", 30, canvas.height-55, {});
-    canvas.drawText("(c) bye 2024", 30, canvas.height-35, {});
-    canvas.drawText("Uses 3rd-party licenses. Press [L] to read.", 30, canvas.height-25, {});
+    fR.draw("Press [ENTER] to start.", 30, canvas.height-35);
+    fR.draw("[c] bye 2024", 30, canvas.height-16);
+    // fR.draw("Uses 3rd-party licenses. Press [L] to read.", 30, canvas.height-16, {});
 }

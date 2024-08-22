@@ -1,5 +1,6 @@
-import {Entity} from "../../hampsterengine/src/things";
+import {Entity, PhysicsEntity} from "../../hampsterengine/src/things";
 import ButtonBorder from "../img/button.webp";
+import {rm_game} from "./rooms/game";
 
 // Private
 
@@ -146,22 +147,23 @@ export class FontRenderer {
             const code = char.charCodeAt();
             let slice;
             if (code < 90 && code > 64) slice = code - 65; // Starts at 0 (LETTER)
-            else if (code < 58 && code > 48) slice = 25 + (code - 59) // Starts at 25
-            else if (code === 91) slice = 35;
-            else if (code === 93) slice = 36;
-            else slice = 37;
+            else if (code < 58 && code >= 48) slice = 25 + (code - 47) // Starts at 25
+            else if (code === 91) slice = 36;
+            else if (code === 93) slice = 37;
+            else slice = 38;
+
 
             if (slice < 0) {
                 canvas.setFillColor('red');
                 // debugger
             }
-            else canvas.setFillColor('black');
-            // canvas.drawText(`${Math.round(slice)}`, x+(i*(this.w+1)), y, {})
+            else canvas.setFillColor('green');
+            // canvas.drawText(`${slice}`, x+(i*(this.w+1)), y, {})
             canvas.sliceImage(
                 this.font,
                 x+(i*(this.w+1)), y,
                 this.w, this.h,
-                this.w * (slice % 7), this.h * Math.round(slice / 7), this.w, this.h);
+                this.w * slice, 0, this.w, this.h);
         }
     }
 
@@ -170,29 +172,5 @@ export class FontRenderer {
         for (let i = 0; i < lines.length; i++) {
             this.draw(lines[i], x, y+(i*(this.h+1)));
         }
-    }
-}
-
-// ENTITIES
-
-export class Player extends Entity {
-    constructor() {
-        super();
-        this.height=16;
-        this.width=10;
-        this.velocity = {
-            x:0, y:0
-        };
-    }
-
-    draw() {
-        canvas.setFillColor('red');
-        canvas.fillRect(this.x,this.y,this.width,this.height);
-    }
-
-    physicsTick() {
-        // Physics update 60 times a second
-        this.y += this.velocity.y/60;
-        this.x += this.velocity.x/60;
     }
 }

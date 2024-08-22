@@ -1,6 +1,7 @@
 
 import Canvas from "../../hampsterengine/src/canvas.js";
 import Engine from "../../hampsterengine/src/engine.js";
+import {FontRenderer} from "./objects";
 
 import SoundBox from "./sb-player-small";
 // import {mus_DEMOSONG} from "./songs/DEMOSONGDONOTCOMMIT";
@@ -20,13 +21,12 @@ import {rm_DEBUG_music} from "./rooms/debug_music";
 import {rm_DEBUG_INCURSION} from "./rooms/debug_incursion";
 import {rm_DEBUG_text} from "./rooms/debug_text";
 import Mouse from "../../hampsterengine/src/mouse";
-import {FontRenderer} from "./objects";
 
 // Music
 // There is none
 
 // Init the engine and canvas
-const canvas = new Canvas('canvas');
+const canvas = new Canvas('c');
 const engine = new Engine(canvas);
 const assets = engine.assetStore;
 assets.addImage('font', font);
@@ -36,9 +36,9 @@ window.fR = fontRenderer
 // const mouse = new Mouse(engine);
 // window.mouse = mouse;
 
-canvas.width = 256*4;
-canvas.height = 240*4;
-canvas.pixelRatio = 4;
+canvas.width = 256 * 2;
+canvas.height = 240 * 2;
+canvas.pixelRatio = 2;
 canvas.ctx.setTransform(canvas.pixelRatio, 0, 0, canvas.pixelRatio, 0, 0);
 canvas.ctx.imageSmoothingEnabled = false;
 
@@ -61,19 +61,26 @@ engine.registerRoom(rm_DEBUG_text, 'debug_text');
 // stats.showPanel(0);
 // document.body.appendChild( stats.dom );
 
+let physicsFrame=0;
+
 function main() {
+    // Draw things. no user interaction or physics here.
+
     try {
         // stats.begin();
         engine.frames++;
         canvas.fill(engine.room.bgColor ?? 'black');
 
-        engine.step();
         engine.draw();
         engine.drawGui();
 
         // engine.drawCursor();
 
         // stats.end();
+
+        if (query.get('debug')) {
+
+        }
 
         // Ask to run at the next frame
         requestAnimationFrame(main);
@@ -98,11 +105,10 @@ function main() {
 }
 
 function physicsTick() {
-    if (!engine.running) return; // Paused
-    // Tell every object to process physics
-    for (let thing of engine.room.entities) {
-        thing.physicsTick();
-    }
+    // Runs 60 times a second regardless of frame rate.
+    physicsFrame++;
+
+    if (engine.running) engine.room.step();
 }
 
 console.debug(engine.rooms);
