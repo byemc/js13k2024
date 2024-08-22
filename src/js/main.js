@@ -25,6 +25,9 @@ import Mouse from "../../hampsterengine/src/mouse";
 // Music
 // There is none
 
+// Parse query parameters
+const query = new URLSearchParams(window.location.search);
+
 // Init the engine and canvas
 const canvas = new Canvas('c');
 const engine = new Engine(canvas);
@@ -36,16 +39,14 @@ window.fR = fontRenderer
 // const mouse = new Mouse(engine);
 // window.mouse = mouse;
 
-canvas.width = 256 * 2;
-canvas.height = 240 * 2;
-canvas.pixelRatio = 2;
+const scale = (query.get('debug') ? 4 : 1);
+canvas.width = 256 * scale;
+canvas.height = 240 * scale;
+canvas.pixelRatio = scale;
 canvas.ctx.setTransform(canvas.pixelRatio, 0, 0, canvas.pixelRatio, 0, 0);
 canvas.ctx.imageSmoothingEnabled = false;
 
 engine.running = false; // Game uses this as a pause state actually
-
-// Parse query parameters
-const query = new URLSearchParams(window.location.search);
 
 engine.registerRoom(rm_mainMenu, 'mainMenu');
 engine.registerRoom(rm_game, 'game');
@@ -62,6 +63,9 @@ engine.registerRoom(rm_DEBUG_text, 'debug_text');
 // document.body.appendChild( stats.dom );
 
 let physicsFrame=0;
+window.physicsFrame = physicsFrame;
+
+let readyTime = 0;
 
 function main() {
     // Draw things. no user interaction or physics here.
@@ -79,7 +83,9 @@ function main() {
         // stats.end();
 
         if (query.get('debug')) {
-
+            canvas.drawText(`physics ticks: ${physicsFrame} (~${(physicsFrame/60).toFixed(1)}sec)`, 0, 0,{textBaseline:'top'})
+            canvas.drawText(`frames: ${engine.frames} (~${(engine.frames/(physicsFrame/60)).toFixed(1)}FPS <--flawed)`, 0, 8,{textBaseline:'top'})
+            canvas.drawText(`run time: ${((performance.now()-readyTime)/1000).toFixed(1)}sec`, 0, 16, {textBaseline:'top'})
         }
 
         // Ask to run at the next frame
@@ -108,7 +114,7 @@ function physicsTick() {
     // Runs 60 times a second regardless of frame rate.
     physicsFrame++;
 
-    if (engine.running) engine.room.step();
+    engine.room.step();
 }
 
 console.debug(engine.rooms);
@@ -127,6 +133,7 @@ function load() {
         engine.loadLoop();
         setTimeout(load, 1000/60);
     } else {
+        readyTime = performance.now();
         main();
         setInterval(physicsTick, 1000/60); // Update physics 60 times a second
     }

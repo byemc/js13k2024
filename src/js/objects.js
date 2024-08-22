@@ -132,10 +132,15 @@ export class FontRenderer {
         this.font = font;
         this.h = 8;
         this.w = 6;
+        this.invert = 0;
     }
 
     draw(text, x, y) {
         text = text.toUpperCase();
+
+        const oldFilter = canvas.filter;
+        if (this.invert) canvas.filter = 'invert(1)';
+
         let split
         try{
             split = text.split("");
@@ -165,6 +170,8 @@ export class FontRenderer {
                 this.w, this.h,
                 this.w * slice, 0, this.w, this.h);
         }
+
+        canvas.filter = oldFilter;
     }
 
     drawLines(text, x, y) {

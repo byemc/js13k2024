@@ -4,4 +4,8 @@ export function drawLineThroughPoint(x, y) {
     canvas.drawLine();
 }
 
-export const GRAVITY = 100;
+export const clone = structuredClone;
+
+export const clonePlayer = player => {
+    return player;
+}
