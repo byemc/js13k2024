@@ -4,6 +4,12 @@ import Engine from "../../hampsterengine/src/engine.js";
 import Keyboard from "../../hampsterengine/src/keyboard";
 import {FontRenderer, Stars} from "./objects";
 
+// Init the engine and canvas
+const canvas = new Canvas(c);
+const engine = new Engine(canvas);
+const assets = engine.assetStore;
+const keyboard = new Keyboard();
+
 import SoundBox from "./sb-player-small";
 // import {mus_DEMOSONG} from "./songs/DEMOSONGDONOTCOMMIT";
 
@@ -31,11 +37,6 @@ import {rm_DEBUG_sprites} from "./rooms/debug_sprites";
 const query = new URLSearchParams(window.location.search);
 window.query = query;
 
-// Init the engine and canvas
-const canvas = new Canvas(c);
-const engine = new Engine(canvas);
-const assets = engine.assetStore;
-const keyboard = new Keyboard();
 assets.addImage('font', font);
 
 const fontRenderer = new FontRenderer(assets.get`font`);
@@ -81,8 +82,9 @@ engine.running = false; // Game uses this as a pause state actually
 // }
 // tempCanvasStars.toBlob(createStarsObjectURL);
 
-assets.addMiniSprite('grass', 'IIIIIIQIQQQJZQZZRZRRZRZRSSRSRZZR');
-assets.renderMiniSprite('grass', ['#2a6', '#964', '#853']);
+const GROUND_PALETTE = ['#2a6', '#964', '#853']
+assets.addMiniSprite('grass', 'IIIIIIQIQQQJZQZZRZRRZRZRSSRSRZZR', 8, GROUND_PALETTE);
+assets.addMiniSprite('dirt', 'SSRRRZ[ZZZRRZRZZRZRRZRZRSSRSRZZR', 8, GROUND_PALETTE);
 
 engine.registerRoom(rm_mainMenu, 'mainMenu');
 engine.registerRoom(rm_game, 'game');
@@ -132,8 +134,7 @@ function main() {
     } catch (e) {
         engine.running = false;
 
-        canvas.pixelRatio = 2;
-        canvas.ctx.setTransform(canvas.pixelRatio, 0, 0, canvas.pixelRatio, 0, 0);
+        canvas.setScale(1);
         canvas.fill('#a05555d0');
 
         const logo = assets.get`splash`
@@ -162,12 +163,10 @@ function physicsTick() {
 
 console.debug(engine.rooms);
 
+let roomToLoad = (query.get`room` ? engine.getRoomIndex(query.get`room`) : engine.getRoomIndex`mainMenu`);
 if (query.get`room`) {
     console.log('Requesting room', query.get`room`);
     engine.loadDelay = 0;
-    engine.room = engine.getRoomIndex(query.get`room`);
-} else {
-    engine.room = engine.getRoomIndex`mainMenu`;
 }
 
 // Ensure assets are loaded.
@@ -176,6 +175,9 @@ function load() {
         engine.loadLoop();
         setTimeout(load, 1000/60);
     } else {
+        engine.initRooms();
+        console.log("Initialised rooms");
+        engine.room = roomToLoad;
         readyTime = performance.now();
         engine.lastPhysicsFrame = performance.now();
         main();

@@ -2,12 +2,15 @@
 import {Entity, Room} from "../../../hampsterengine/src/things";
 import Player from "../objects/player";
 import {clone, clonePlayer, abs} from "../extras";
+import Ground from "../objects/ground";
 
 export const rm_game = new Room();
 const GRAVITY_X = 0; // I don't think we're going to use X gravity but i'm going to keep in the source in case i do
 const GRAVITY_Y = 300; // Per second
 const entities = rm_game.entities;
 
+rm_game.width = 1000;
+rm_game.height = 1000;
 
 rm_game.start = _=>{
     engine.running = true;
@@ -19,6 +22,7 @@ rm_game.stop = _=>{
 
 rm_game.step = _=>{
     const elapsed = 1 / 60;
+    const player = rm_game.get('plr');
 
     let friction = 0.9;
     const boost = keyboard.keys.includes("Shift") ? 40 : 0;
@@ -71,6 +75,12 @@ rm_game.step = _=>{
 
     if (abs(player.vy) < 1) player.vy = 0;
     if (abs(player.vx) < 1) player.vx = 0;
+
+    // Update the camera
+    canvas.camera.goTo(
+        Math.min(Math.max(player.x+canvas.width/8, canvas.width/8), rm_game.width-canvas.width),
+        Math.min(Math.max(player.y+canvas.width/8, canvas.width/8), rm_game.height-canvas.height)
+    );
 }
 
 rm_game.drawGui = _ => {
@@ -87,30 +97,24 @@ rm_game.drawGui = _ => {
     });
 
     // Draw the player's position
-    canvas.strokeRect(rm_game.x, rm_game.y, 10, 16);
+    // canvas.strokeRect(rm_game.x, rm_game.y, 10, 16);
 }
 
-let player = new Player();
+rm_game.init = _=>{
+    let player = new Player();
 
-player.x = 40;
-player.y = 40;
-player.width = 10;
-player.height = 16;
-window.player = player;
-entities.push(player);
+    player.x = 40;
+    player.y = 40;
+    player.width = 16;
+    player.height = 26;
+    window.player = player;
+    rm_game.push(player, 'plr');
 
-let floor = new Entity();
-floor.x = 64;
-floor.y = 150;
-floor.width = 128;
-floor.height = 50;
-floor.draw = _=> { canvas.setStrokeColor('black'); canvas.strokeRect(floor.x, floor.y, floor.width, floor.height) }
-rm_game.entities.push(floor);
+    let ground = new Ground(2);
+    ground.width = rm_game.width;
+    ground.y = rm_game.height - ground.height;
 
-let ceiling = new Entity();
-ceiling.x = 64;
-ceiling.y = 75;
-ceiling.width = 128;
-ceiling.height = 50;
-ceiling.draw = _=> { canvas.setStrokeColor('black'); canvas.strokeRect(ceiling.x, ceiling.y, ceiling.width, ceiling.height) }
-rm_game.entities.push(ceiling);
+    rm_game.push(ground);
+
+}
+
