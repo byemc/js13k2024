@@ -52,6 +52,21 @@ canvas.height = 240;
 canvas.setScale();
 canvas.ctx.imageSmoothingEnabled = false;
 
+const floor = Math.floor;
+const u = _=> {
+    const w = innerWidth;
+    const h = innerHeight;
+    const wS = floor(w/256);
+    const hS = floor(h/240);
+    const s=Math.min(wS,hS);
+    canvas.width = 256*s;
+    canvas.height= 240*s;
+    canvas.pixelRatio = s;
+    canvas.setScale(canvas.scale);
+    canvas.ctx.imageSmoothingEnabled = false;
+}
+u();addEventListener('resize', u, !0);
+
 engine.running = false; // Game uses this as a pause state actually
 
 // // Prerender the stars
