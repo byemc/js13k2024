@@ -1,0 +1,5 @@
+[phases.setup]
+nixPkgs = ['...', 'zip']
+
+[phases.build]
+cmds = ["npm i", "npm run build"]
