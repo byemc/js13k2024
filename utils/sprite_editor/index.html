@@ -2,15 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sprite editor</title>
+    <title>Sprite checker</title>
 </head>
 <body>
+
+    <p>using code generated with https://xem.github.io/miniPixelArt/</p>
+
     <canvas id=a>
     <script>
         ctx=a.getContext`2d` // ctx
         pallette="000f000f000fff00fff0f" // color palette (you can remove the colors you didn't use to save bytes)
         pixels=[];
-        "@@@@HHA@@A@@HIIAACCHQCSHARBHHIIA".replace(/./g,
+        "IIIIIIQIQQQJZQZZRZRRZRZRSSRSRZZR".replace(/./g,
             character=>{
                 characterCode=character.charCodeAt(),
                     pixels.push(characterCode&7), // Gets the last three bits

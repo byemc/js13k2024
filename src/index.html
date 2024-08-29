@@ -3,9 +3,7 @@
         margin:0;
         background: #1a1a1a;
     }
-    canvas {
-        width: 256px;
-        height: 240px;
+    #c {
         position:fixed;top:50%;left:50%;translate:-50% -50%;
         image-rendering: pixelated;
     }
@@ -14,14 +12,18 @@
 <script src="./main.js"></script>
 <script>
     fl = Math.floor;
+    a = c.getContext`2d`;
     u = _=>{
         w = innerWidth;
         h = innerHeight;
         wS = fl(w/256);
         hS = fl(h/256);
         s=Math.min(wS,hS);
-        c.style.width = 256*s;
-        c.style.height= 240*s;
+        c.width = 256*s;
+        c.height= 240*s;
+        canvas.pixelRatio = s;
+        canvas.setScale(canvas.scale);
+        a.imageSmoothingEnabled = false;
     }
     u();addEventListener('resize', u, !0);
 </script>

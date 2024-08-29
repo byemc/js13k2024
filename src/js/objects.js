@@ -1,6 +1,8 @@
 import {Entity} from "../../hampsterengine/src/things";
 import ButtonBorder from "../img/button.webp";
 import {rm_game} from "./rooms/game";
+import {mulberry32, round, roundToRatio} from "./extras";
+import Canvas from "../../hampsterengine/src/canvas";
 
 // Private
 
@@ -125,6 +127,42 @@ export class Logo extends Entity {
         })
     }
 
+}
+
+export class Stars {
+    constructor(canvas='c', seed=1522363656) {
+        // Set seed to (Math.random()*2**32)>>>0 for a random seed every time
+        this.seed = seed;
+        this.canvas = new Canvas(canvas);
+
+        this.stars = [];
+    }
+
+    init(w, h) {
+        // Split the draw area into 2*2 squares
+        const gridW = Math.floor(w / 2);
+        const gridH = Math.floor(h / 2);
+
+        for (let ww = 0; ww <= gridW; ww++) {
+            for (let hh = 0; hh <= gridH; hh++) {
+                const offsetX = (ww*2) + (Math.ceil(mulberry32(this.seed - ww * hh)()*10) - 10);
+                const offsetY = (hh*2) + (Math.ceil(mulberry32(this.seed + hh)()*10) - 10);
+                if (mulberry32(this.seed * ww + hh)() > 0.99) this.stars.push({x: offsetX, y: offsetY});
+            }
+        }
+    }
+
+    draw(x, y, w, h) {
+        if (this.stars.length === 0) this.init(w, h);
+
+        x = roundToRatio(x);
+        y = roundToRatio(y);
+
+        canvas.setFillColor('rgba(255,255,255,0.3)');
+        for (const star of this.stars) {
+            if (star.x + x < canvas.width) this.canvas.fillRect(x + star.x, y + star.y, 2, 2);
+        }
+    }
 }
 
 export class FontRenderer {
