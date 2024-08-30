@@ -9,8 +9,8 @@ const GRAVITY_X = 0; // I don't think we're going to use X gravity but i'm going
 const GRAVITY_Y = 300; // Per second
 const entities = rm_game.entities;
 
-rm_game.width = 1000;
-rm_game.height = 1000;
+rm_game.width = 2560;
+rm_game.height = 500;
 
 rm_game.start = _=>{
     engine.running = true;
@@ -78,8 +78,8 @@ rm_game.step = _=>{
 
     // Update the camera
     canvas.camera.goTo(
-        Math.min(Math.max(player.x+canvas.width/8, canvas.width/8), rm_game.width-canvas.width),
-        Math.min(Math.max(player.y+canvas.width/8, canvas.width/8), rm_game.height-canvas.height)
+        Math.min(Math.max(player.x+(player.width/2)-canvas.width/2, canvas.width/8), rm_game.width-canvas.width),
+        Math.min(Math.max(player.y-canvas.height/8, canvas.height/8), rm_game.height-canvas.height)
     );
 }
 

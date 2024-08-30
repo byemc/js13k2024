@@ -21,7 +21,7 @@ export default class Ground extends Entity {
         if (!(this.surface || this.below)) return;
         canvas.tileImage(this.surface, roundToRatio(this.x), roundToRatio(this.y), this.width, 8*this.scale, 8*this.scale, 8*this.scale);
         canvas.tileImage(this.below, roundToRatio(this.x), roundToRatio(this.y+8*this.scale), this.width, this.height-8*this.scale, 8*this.scale, 8*this.scale);
-        canvas.fillRect(this.x, this.y, this.width, this.height);
+        // canvas.fillRect(this.x, this.y, this.width, this.height);
     }
 }
 
