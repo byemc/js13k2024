@@ -10,11 +10,11 @@ export default class Player extends Entity {
 
     draw() {
         canvas.setFillColor('red');
-        const timeSinceLastFrame = (performance.now() - engine.lastPhysicsFrame) / 1000 / (query.get('slowdown') ? 60 : 1);
-        const interpolationX = this.vx * timeSinceLastFrame;
-        const interpolationY = this.vy * timeSinceLastFrame;
+        // const timeSinceLastFrame = (performance.now() - engine.lastPhysicsFrame) / 1000 / (query.get('slowdown') ? 60 : 1);
+        // const interpolationX = this.vx * timeSinceLastFrame;
+        // const interpolationY = this.vy * timeSinceLastFrame;
         // const interpolationX = 0;
         // const interpolationY = 0;
-        canvas.fillRect(roundToRatio(this.x+interpolationX),roundToRatio(this.y+interpolationY),this.width,this.height);
+        canvas.fillRect(roundToRatio(this.x),roundToRatio(this.y),this.width,this.height);
     }
 }
