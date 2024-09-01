@@ -1,7 +1,7 @@
 
 import {Entity, Room} from "../../../hampsterengine/src/things";
 import Player from "../objects/player";
-import {clone, clonePlayer, abs} from "../extras";
+import {clone, clonePlayer, abs, roundToRatio} from "../extras";
 import Ground from "../objects/ground";
 
 export const rm_game = new Room();
@@ -79,7 +79,7 @@ rm_game.step = _=>{
     if (abs(player.vy) < 1) player.vy = 0;
     if (abs(player.vx) < 1) player.vx = 0;
 
-    if ({x: player.x, y: player.y} !== player.lastFramePos) {
+    if (player.x !== player.lastFramePos.x || player.y !== player.lastFramePos.y) {
         player.lastFramePos = {x: player.x, y: player.y};
         // Update the camera
         canvas.camera.goTo(
@@ -92,7 +92,7 @@ rm_game.step = _=>{
 
 rm_game.draw = _ => {
     canvas.ctx.save();
-    canvas.ctx.translate(-canvas.camera.x, -canvas.camera.y);
+    canvas.ctx.translate(roundToRatio(-canvas.camera.x), roundToRatio(-canvas.camera.y));
     for (let thing of rm_game.entities) {
         thing.draw();
     }

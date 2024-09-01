@@ -7,7 +7,7 @@ export default class Player extends Entity {
 
         this.jumping = false;
 
-        this.lastFramePos = {x: 0, y: 0};
+        this.lastFramePos = {x: this.x, y: this.y};
     }
 
     draw() {
