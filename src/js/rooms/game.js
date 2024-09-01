@@ -6,13 +6,14 @@ import Ground from "../objects/ground";
 
 export const rm_game = new Room();
 const GRAVITY_X = 0; // I don't think we're going to use X gravity but i'm going to keep in the source in case i do
-const GRAVITY_Y = 300; // Per second
+const GRAVITY_Y = 600; // Per second
 const entities = rm_game.entities;
 
 rm_game.width = 2560;
 rm_game.height = 500;
 
 rm_game.start = _=>{
+    canvas.setScale(2);
     engine.running = true;
 }
 
@@ -21,19 +22,21 @@ rm_game.stop = _=>{
 }
 
 rm_game.step = _=>{
+    canvas.camera.step();
+
     const elapsed = 1 / 60;
     const player = rm_game.get('plr');
 
-    let friction = 0.9;
+    let friction = 0.95;
     const boost = keyboard.keys.includes("Shift") ? 40 : 0;
 
     for (const key of keyboard.keys) {
         switch (key) {
             case "ArrowLeft":
-                player.vx = -80-boost;
+                player.vx = -50-boost;
                 break;
             case "ArrowRight":
-                player.vx = 80+boost;
+                player.vx = 50+boost;
                 break;
             case " ":
                 if (!player.jumping) {
@@ -46,8 +49,8 @@ rm_game.step = _=>{
     const entitiesWithoutThePlayer = [...entities].toSpliced(entities.indexOf(player), 1);
     // console.debug(entitiesWithoutThePlayer);
 
-    player.vx = Math.min(500, player.vx + (player.ax * elapsed + GRAVITY_X*elapsed));
-    player.vy = Math.min(500, player.vy + (player.ay * elapsed + GRAVITY_Y*elapsed));
+    player.vx = Math.min(400, player.vx + (player.ax * elapsed + GRAVITY_X*elapsed));
+    player.vy = Math.min(400, player.vy + (player.ay * elapsed + GRAVITY_Y*elapsed));
     player.x += player.vx * elapsed;
     player.y += player.vy * elapsed;
 
@@ -76,28 +79,42 @@ rm_game.step = _=>{
     if (abs(player.vy) < 1) player.vy = 0;
     if (abs(player.vx) < 1) player.vx = 0;
 
-    // Update the camera
-    canvas.camera.goTo(
-        Math.min(Math.max(player.x+(player.width/2)-canvas.width/2, canvas.width/8), rm_game.width-canvas.width),
-        Math.min(Math.max(player.y-canvas.height/8, canvas.height/8), rm_game.height-canvas.height)
-    );
+    if ({x: player.x, y: player.y} !== player.lastFramePos) {
+        player.lastFramePos = {x: player.x, y: player.y};
+        // Update the camera
+        canvas.camera.goTo(
+            Math.min(Math.max(player.x+(player.width/2)-canvas.width/2, canvas.width/8), rm_game.width-canvas.width),
+            Math.min(Math.max(player.y-canvas.height/8, canvas.height/8), rm_game.height-canvas.height),
+            100
+        );
+    }
+}
+
+rm_game.draw = _ => {
+    canvas.ctx.save();
+    canvas.ctx.translate(-canvas.camera.x, -canvas.camera.y);
+    for (let thing of rm_game.entities) {
+        thing.draw();
+    }
+    canvas.strokeRect(rm_game.x, rm_game.y, player.width, player.height);
+    canvas.ctx.restore();
 }
 
 rm_game.drawGui = _ => {
     // Draw the player's position
     canvas.setFillColor('black');
-    canvas.drawText(`Position: (${player.x},${player.y})`, 10, canvas.height-10, {
-        maxWidth: canvas.width-20
+    canvas.drawText(`Position: (${player.x},${player.y})`, 5, canvas.height-5, {
+        maxWidth: canvas.width-10,
+        size: 4
     });
-    canvas.drawText(`Velocity: (${player.vx},${player.vy})`, 10, canvas.height-18, {
-        maxWidth: canvas.width-20
+    canvas.drawText(`Velocity: (${player.vx},${player.vy})`, 5, canvas.height-9, {
+        maxWidth: canvas.width-10,
+        size: 4
     });
-    canvas.drawText(`Acceleration: (${player.ax},${player.ay})`, 10, canvas.height-26, {
-        maxWidth: canvas.width-20
+    canvas.drawText(`Acceleration: (${player.ax},${player.ay})`, 5, canvas.height-13, {
+        maxWidth: canvas.width-10,
+        size: 4
     });
-
-    // Draw the player's position
-    // canvas.strokeRect(rm_game.x, rm_game.y, 10, 16);
 }
 
 rm_game.init = _=>{
@@ -105,12 +122,12 @@ rm_game.init = _=>{
 
     player.x = 40;
     player.y = 40;
-    player.width = 16;
-    player.height = 26;
+    player.width = 8;
+    player.height = 8*(8/5);
     window.player = player;
     rm_game.push(player, 'plr');
 
-    let ground = new Ground(2);
+    let ground = new Ground(1);
     ground.width = rm_game.width;
     ground.y = rm_game.height - ground.height;
 

@@ -14,7 +14,7 @@ import SoundBox from "./sb-player-small";
 // import {mus_DEMOSONG} from "./songs/DEMOSONGDONOTCOMMIT";
 
 // dependencies used for debugging. comment out code that uses this and they won't be included
-import Stats from "stats.js";
+// import Stats from "stats.js";
 
 // Images
 import font from "../img/font.webp";
@@ -98,9 +98,9 @@ engine.registerRoom(rm_DEBUG_stars, 'debug_stars');
 engine.registerRoom(rm_DEBUG_sprites, 'debug_sprites');
 
 // Init stats.js
-const stats = new Stats();
-stats.showPanel(0);
-document.body.appendChild( stats.dom );
+// const stats = new Stats();
+// stats.showPanel(0);
+// document.body.appendChild( stats.dom );
 
 let physicsFrame=0;
 window.physicsFrame = physicsFrame;
@@ -111,7 +111,7 @@ function main() {
     // Draw things. no user interaction or physics here.
 
     try {
-        stats.begin();
+        // stats.begin();
         engine.frames++;
         canvas.fill(engine.room.bgColor ?? 'black');
 
@@ -120,11 +120,11 @@ function main() {
 
         // engine.drawCursor();
 
-        stats.end();
+        // stats.end();
 
         if (debug) {
             canvas.drawText(`physics ticks: ${engine.physicsFrames} (~${(engine.physicsFrames/60).toFixed(1)}sec)`, 0, 0,{textBaseline:'top'})
-            canvas.drawText(`frames: ${engine.frames}`, 0, 8,{textBaseline:'top'})
+            canvas.drawText(`camera pos: ${canvas.camera.x},${canvas.camera.y}`, 0, 8,{textBaseline:'top'})
             canvas.drawText(`run time: ${((performance.now()-readyTime)/1000).toFixed(1)}sec`, 0, 16, {textBaseline:'top'})
             canvas.drawText(`keys: ${JSON.stringify(keyboard.keys)}`, 0, 24, {textBaseline:'top'})
         }
