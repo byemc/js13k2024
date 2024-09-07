@@ -13,7 +13,7 @@ const keyboard = new Keyboard();
 import SoundBox from "./sb-player-small";
 // import {mus_DEMOSONG} from "./songs/DEMOSONGDONOTCOMMIT";
 
-// dependencies used for debugging. comment out code that uses this and they won't be included
+// dependencies used for debugging. comment out code that uses this, and they won't be included
 // import Stats from "stats.js";
 
 // Images
@@ -29,6 +29,7 @@ import {rm_DEBUG_INCURSION} from "./rooms/debug_incursion";
 import {rm_DEBUG_text} from "./rooms/debug_text";
 import {rm_DEBUG_stars} from "./rooms/debug_stars";
 import {rm_DEBUG_sprites} from "./rooms/debug_sprites";
+import {round} from "./extras";
 
 // Music
 // There is none
@@ -85,6 +86,15 @@ engine.running = false; // Game uses this as a pause state actually
 const GROUND_PALETTE = ['#2a6', '#964', '#853']
 assets.addMiniSprite('grass', 'IIIIIIQIQQQJZQZZRZRRZRZRSSRSRZZR', 8, GROUND_PALETTE);
 assets.addMiniSprite('dirt', 'SSRRRZ[ZZZRRZRZZRZRRZRZRSSRSRZZR', 8, GROUND_PALETTE);
+// assets.addMiniSprite('player', '@@@@@@@@@@@@@@@@@@_XCx@@@@@II@@@@@HSSA@@@@H[[A@@@@@II@@@@@@@@@@@@@`dd@@@@@dddD@@@@dddD@@@@mdlE@@@@@dD@@@@@@[C@@@@@@[C@@@@@G[[x@@', 16, [
+//         '#000', '#fff', '#241F31',   '#77b19d', '#FAB80C',,'pink'
+// ]);
+assets.addMiniSprite('player_head', '@@@C[@HIAYZJY[KHIA', 6, [
+    '#000', '#fff', '#241F31'
+]);
+assets.addMiniSprite('body', 'HIIAIIIIIIII[II[@II@@RR@@RR@@RRB', 8, [
+    '#77b19d', '#241F31', '#FAB80C'
+]);
 
 engine.registerRoom(rm_mainMenu, 'mainMenu');
 engine.registerRoom(rm_game, 'game');
@@ -124,7 +134,7 @@ function main() {
 
         if (debug) {
             canvas.drawText(`physics ticks: ${engine.physicsFrames} (~${(engine.physicsFrames/60).toFixed(1)}sec)`, 0, 0,{textBaseline:'top'})
-            canvas.drawText(`camera pos: ${canvas.camera.x},${canvas.camera.y}`, 0, 8,{textBaseline:'top'})
+            canvas.drawText(`camera pos: ${round(canvas.camera.x)},${round(canvas.camera.y)}`, 0, 8,{textBaseline:'top'})
             canvas.drawText(`run time: ${((performance.now()-readyTime)/1000).toFixed(1)}sec`, 0, 16, {textBaseline:'top'})
             canvas.drawText(`keys: ${JSON.stringify(keyboard.keys)}`, 0, 24, {textBaseline:'top'})
         }
