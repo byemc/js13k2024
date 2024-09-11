@@ -1,6 +1,5 @@
 import {Entity} from "../../../hampsterengine/src/things";
-import {abs, easeOutSine, GRAVITY_X, GRAVITY_Y, round, roundToRatio} from "../extras";
-import {rm_game} from "../rooms/game";
+import {abs, easeOutSine, GRAVITY_X, GRAVITY_Y, roundToRatio} from "../extras";
 
 export default class Player extends Entity {
     constructor(props) {
@@ -20,7 +19,7 @@ export default class Player extends Entity {
         this.headTarget = {x:this.x, y:this.y};
         this.headPos = {x:this.x, y: this.y};
         this.headPosStart = {x:this.x, y: this.y};
-        this.headTrans = 25;
+        this.headTrans = 1000;
         this.headStartTime = performance.now();
 
         this.collideRects = [
@@ -58,7 +57,7 @@ export default class Player extends Entity {
             }
         }
 
-        if ((!(engine.physicsFrames % 15) && this.vx == 0) || this.vy) this.stepUp = 0;
+        if ((!(engine.physicsFrames % 15) && this.vx === 0) || this.vy) this.stepUp = 0;
 
 
         const entities = engine.room.entities;
@@ -95,7 +94,7 @@ export default class Player extends Entity {
         if (abs(this.vy) < 1) this.vy = 0;
         if (abs(this.vx) < 1) this.vx = 0;
 
-        if (player.x !== player.lastFramePos.x || player.y !== player.lastFramePos.y || !this.stepUp    ) {
+        if (player.x !== player.lastFramePos.x || player.y !== player.lastFramePos.y || !this.stepUp) {
             this.headTarget = {x: this.x, y: this.y - (this.stepUp ? 1 : 0)}
             this.headPosStart = structuredClone(this.headPos);
             this.headStartTime = performance.now();
@@ -128,9 +127,9 @@ export default class Player extends Entity {
         let distX = this.headTarget.x - this.headPosStart.x;
         let distY = this.headTarget.y - this.headPosStart.y;
 
-        const elapsed = Math.min(performance.now() - this.headStartTime, this.headTrans);
         const end = this.headTrans;
-        const pos = easeOutSine(elapsed / end || 1);
+        const elapsed = Math.min(performance.now() - this.headStartTime, end);
+        const pos = elapsed / end || 1;
 
         this.headPos.x = Math.min(
             this.headTarget.x,
@@ -144,8 +143,8 @@ export default class Player extends Entity {
         // Draw the head
         canvas.drawImage(
             engine.assetStore.get`player_head`.sprite,
-            roundToRatio(this.headPos.x - 1),
-            roundToRatio(this.headPos.y - 7),
+            this.headPos.x - 1,
+            this.headPos.y - 7,
             engine.assetStore.get`player_head`.size,
             engine.assetStore.get`player_head`.size
         )

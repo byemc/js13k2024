@@ -45,31 +45,31 @@ const SoundBox = function () {
     //--------------------------------------------------------------------------
 
     // Oscillators
-    var osc_sin = function (value) {
+    const osc_sin = function (value) {
         return Math.sin(value * 6.283184);
     };
 
-    var osc_saw = function (value) {
+    const osc_saw = function (value) {
         return 2 * (value % 1) - 1;
     };
 
-    var osc_square = function (value) {
+    const osc_square = function (value) {
         return (value % 1) < 0.5 ? 1 : -1;
     };
 
-    var osc_tri = function (value) {
-        var v2 = (value % 1) * 4;
+    const osc_tri = function (value) {
+        const v2 = (value % 1) * 4;
         if (v2 < 2) return v2 - 1;
         return 3 - v2;
     };
 
-    var getnotefreq = function (n) {
+    const getnotefreq = function (n) {
         // 174.61.. / 44100 = 0.003959503758 (F3)
         return 0.003959503758 * (2 ** ((n - 128) / 12));
     };
 
-    var createNote = function (instr, n, rowLen) {
-        var osc1 = mOscillators[instr.i[0]],
+    const createNote = function (instr, n, rowLen) {
+        const osc1 = mOscillators[instr.i[0]],
             o1vol = instr.i[1],
             o1xenv = instr.i[3] / 32,
             osc2 = mOscillators[instr.i[4]],
@@ -80,17 +80,17 @@ const SoundBox = function () {
             sustain = instr.i[11] * instr.i[11] * 4,
             release = instr.i[12] * instr.i[12] * 4,
             releaseInv = 1 / release,
-            expDecay = -instr.i[13] / 16,
-            arp = instr.i[14],
-            arpInterval = rowLen * (2 ** (2 - instr.i[15]));
+            expDecay = -instr.i[13] / 16;
+        let arp = instr.i[14];
+        const arpInterval = rowLen * (2 ** (2 - instr.i[15]));
 
-        var noteBuf = new Int32Array(attack + sustain + release);
+        const noteBuf = new Int32Array(attack + sustain + release);
 
         // Re-trig oscillators
-        var c1 = 0, c2 = 0;
+        let c1 = 0, c2 = 0;
 
         // Local variables.
-        var j, j2, e, t, rsample, o1t, o2t;
+        let j, j2, e, t, rsample, o1t, o2t;
 
         // Generate one note (attack + sustain + release)
         for (j = 0, j2 = 0; j < attack + sustain + release; j++, j2++) {
@@ -147,7 +147,7 @@ const SoundBox = function () {
     ];
 
     // Private variables set up by init()
-    var mSong, mLastRow, mCurrentCol, mNumWords, mMixBuf;
+    let mSong, mLastRow, mCurrentCol, mNumWords, mMixBuf;
 
 
     //--------------------------------------------------------------------------
@@ -177,21 +177,21 @@ const SoundBox = function () {
     // Generate audio data for a single track
     this.generate = function () {
         // Local variables
-        var i, j, b, p, row, col, n, cp,
+        let i, j, b, p, row, col, n, cp,
             k, t, lfor, e, x, rsample, rowStartSample, f, da;
 
         // Put performance critical items in local variables
-        var chnBuf = new Int32Array(mNumWords),
+        const chnBuf = new Int32Array(mNumWords),
             instr = mSong.songData[mCurrentCol],
             rowLen = mSong.rowLen,
             patternLen = mSong.patternLen;
 
         // Clear effect state
-        var low = 0, band = 0, high;
-        var lsample, filterActive = false;
+        let low = 0, band = 0, high;
+        let lsample, filterActive = false;
 
         // Clear note cache.
-        var noteCache = [];
+        let noteCache = [];
 
         // Patterns
         for (p = 0; p <= mLastRow; ++p) {
@@ -200,7 +200,7 @@ const SoundBox = function () {
             // Pattern rows
             for (row = 0; row < patternLen; ++row) {
                 // Execute effect command.
-                var cmdNo = cp ? instr.c[cp - 1].f[row] : 0;
+                const cmdNo = cp ? instr.c[cp - 1].f[row] : 0;
                 if (cmdNo) {
                     instr.i[cmdNo - 1] = instr.c[cp - 1].f[row + patternLen] || 0;
 
@@ -211,7 +211,7 @@ const SoundBox = function () {
                 }
 
                 // Put performance critical instrument properties in local variables
-                var oscLFO = mOscillators[instr.i[16]],
+                const oscLFO = mOscillators[instr.i[16]],
                     lfoAmt = instr.i[17] / 512,
                     lfoFreq = (2 ** (instr.i[18] - 9)) / rowLen,
                     fxLFO = instr.i[19],
@@ -237,7 +237,7 @@ const SoundBox = function () {
                         }
 
                         // Copy note from the note cache
-                        var noteBuf = noteCache[n];
+                        const noteBuf = noteCache[n];
                         for (j = 0, i = rowStartSample * 2; j < noteBuf.length; j++, i += 2) {
                             chnBuf[i] += noteBuf[j];
                         }
@@ -311,10 +311,10 @@ const SoundBox = function () {
 
     // Create a AudioBuffer from the generated audio data
     this.createAudioBuffer = function (context) {
-        var buffer = context.createBuffer(2, mNumWords / 2, 44100);
-        for (var i = 0; i < 2; i++) {
-            var data = buffer.getChannelData(i);
-            for (var j = i; j < mNumWords; j += 2) {
+        const buffer = context.createBuffer(2, mNumWords / 2, 44100);
+        for (let i = 0; i < 2; i++) {
+            const data = buffer.getChannelData(i);
+            for (let j = i; j < mNumWords; j += 2) {
                 data[j >> 1] = mMixBuf[j] / 65536;
             }
         }
@@ -324,10 +324,10 @@ const SoundBox = function () {
     // Create a WAVE formatted Uint8Array from the generated audio data
     this.createWave = function () {
         // Create WAVE header
-        var headerLen = 44;
-        var l1 = headerLen + mNumWords * 2 - 8;
-        var l2 = l1 - 36;
-        var wave = new Uint8Array(headerLen + mNumWords * 2);
+        const headerLen = 44;
+        const l1 = headerLen + mNumWords * 2 - 8;
+        const l2 = l1 - 36;
+        const wave = new Uint8Array(headerLen + mNumWords * 2);
         wave.set(
             [82, 73, 70, 70,
                 l1 & 255, (l1 >> 8) & 255, (l1 >> 16) & 255, (l1 >> 24) & 255,
@@ -337,9 +337,10 @@ const SoundBox = function () {
         );
 
         // Append actual wave data
-        for (var i = 0, idx = headerLen; i < mNumWords; ++i) {
+        let i = 0, idx = headerLen;
+        for (; i < mNumWords; ++i) {
             // Note: We clamp here
-            var y = mMixBuf[i];
+            let y = mMixBuf[i];
             y = y < -32767 ? -32767 : (y > 32767 ? 32767 : y);
             wave[idx++] = y & 255;
             wave[idx++] = (y >> 8) & 255;
@@ -351,10 +352,10 @@ const SoundBox = function () {
 
     // Get n samples of wave data at time t [s]. Wave data in range [-2,2].
     this.getData = function (t, n) {
-        var i = 2 * Math.floor(t * 44100);
-        var d = new Array(n);
-        for (var j = 0; j < 2 * n; j += 1) {
-            var k = i + j;
+        const i = 2 * Math.floor(t * 44100);
+        const d = new Array(n);
+        for (let j = 0; j < 2 * n; j += 1) {
+            const k = i + j;
             d[j] = t > 0 && k < mMixBuf.length ? mMixBuf[k] / 32768 : 0;
         }
         return d;
